@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# Create necessary DVC directories that are gitignored
+mkdir -p .dvc/tmp .dvc/cache
+
 dvc config core.no_scm true
 if dvc pull; then
     echo "DVC pull successful!"
