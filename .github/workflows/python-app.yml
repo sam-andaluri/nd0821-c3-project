@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
 
     - name: Set up Python 3.13
       uses: actions/setup-python@v4
@@ -47,16 +49,31 @@ jobs:
     - name: Test with pytest
       run: pytest -vv --cov=. --cov-report=term-missing
 
-    - name: Install Heroku CLI 
-      run: |
-        curl https://cli-assets.heroku.com/install.sh | sh
-              
-    - name: Deploy to Heroku
-      uses: akhileshns/heroku-deploy@v3.13.15
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    # Only deploy on push to main/master (not on PRs)
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+    - uses: actions/checkout@v3
       with:
-        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-        heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-        heroku_email: ${{ secrets.HEROKU_EMAIL }}
-        appdir: "."
-        # Use the buildpack for Python
-        buildpack: "heroku/python"
+        fetch-depth: 0
+
+    - name: Install Heroku CLI
+      run: curl https://cli-assets.heroku.com/install.sh | sh
+
+    - name: Deploy to Heroku via Git
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+      run: |
+        # Set up git
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
+
+        # Add Heroku remote
+        heroku git:remote -a $HEROKU_APP_NAME
+
+        # Push to Heroku
+        git push heroku ${GITHUB_REF##*/}:main --force
