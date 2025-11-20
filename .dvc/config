@@ -1,0 +1,4 @@
+[core]
+    remote = c3-project
+['remote "c3-project"']
+    url = s3://sam-dvc-s3/dvcstore
