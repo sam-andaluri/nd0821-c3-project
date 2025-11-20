@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
-# Heroku post-compile hook to pull DVC models after build
-
-echo "-----> Running DVC pull to fetch model files..."
-
-# Pull models from DVC remote storage
+dvc config core.no_scm true
 if dvc pull; then
-    echo "-----> DVC pull successful!"
-    echo "-----> Model files:"
-    ls -lh model/ 2>/dev/null || echo "WARNING: model/ directory not found"
+    echo "DVC pull successful!"
+    echo "Model files:"
+    ls -lh model/ 2>/dev/null || echo "ERROR: model/ directory not found"
 else
-    echo "-----> DVC pull failed!"
-    echo "WARNING: Model files may not be available. Check AWS credentials."
+    echo "ERROR: DVC pull failed!"
+    echo "ERROR: Model files may not be available. Check AWS credentials."
     exit 0  # Don't fail the build, let the app handle missing models
 fi

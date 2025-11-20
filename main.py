@@ -2,12 +2,26 @@
 FastAPI application for Census Income Prediction
 """
 
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel, Field, ConfigDict
 import pickle
 import pandas as pd
 from ml.data import process_data
 from ml.model import inference
+
+# Pull DVC models on Heroku startup
+if "DYNO" in os.environ and os.path.isdir(".dvc"):
+    print("Running DVC pull...")
+    # Disable SCM integration for Heroku context
+    os.system("dvc config core.no_scm true")
+
+    # Run the pull command
+    if os.system("dvc pull") != 0:
+        exit("dvc pull failed")
+
+    # Remove DVC files to save slug space
+    os.system("rm -r .dvc .apt/usr/lib/dvc")
 
 # Instantiate the app
 app = FastAPI(
