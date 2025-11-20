@@ -10,7 +10,8 @@ import sys
 # Get API URL from environment variable or use default
 # Update this URL to your Heroku app URL
 # Example: "https://your-app-name.herokuapp.com"
-# Or set environment variable: export API_URL="https://your-app-name.herokuapp.com"
+# Or set environment variable:
+#   export API_URL="https://your-app-name.herokuapp.com"
 API_URL = os.environ.get("API_URL", "https://your-app-name.herokuapp.com")
 
 # Test data for prediction
@@ -71,7 +72,10 @@ if __name__ == "__main__":
     # Check if API URL is set
     if API_URL == "https://your-app-name.herokuapp.com":
         print("\n⚠️  WARNING: API_URL is not configured!")
-        print("Please update the API_URL in this script or set the API_URL environment variable")
+        print(
+            "Please update the API_URL in this script or set the "
+            "API_URL environment variable"
+        )
         print("Example: export API_URL='https://your-app-name.herokuapp.com'")
         sys.exit(1)
 
@@ -86,7 +90,8 @@ if __name__ == "__main__":
     print("Test Summary")
     print("="*80)
     print(f"GET / endpoint: {'PASSED' if root_success else 'FAILED'}")
-    print(f"POST /predict endpoint: {'PASSED' if predict_success else 'FAILED'}")
+    result = 'PASSED' if predict_success else 'FAILED'
+    print(f"POST /predict endpoint: {result}")
     print("="*80)
 
     if root_success and predict_success:
