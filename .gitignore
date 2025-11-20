@@ -133,11 +133,6 @@ data/processed/
 mlruns/
 mlartifacts/
 
-# DVC
-.dvc/cache/
-.dvc/tmp/
-.dvc/logs/
-
 # Weights & Biases
 wandb/
 
