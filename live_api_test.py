@@ -49,6 +49,7 @@ def test_root_endpoint():
 def test_predict_endpoint():
     """Test the POST /predict endpoint"""
     print("\nTesting POST /predict endpoint...")
+    print(test_data)
     try:
         response = requests.post(
             f"{API_URL}/predict",
